@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 from decimal import Decimal
 
-from ..models.checkout import (
+from models.checkout import (
     CheckoutSession,
     CheckoutSessionWithOrder,
     CheckoutSessionCreateRequest,
@@ -29,8 +29,8 @@ from ..models.checkout import (
     Error,
     ErrorType,
 )
-from ..data.products import get_product, check_product_availability
-from ..config import settings
+from data.products import get_product, check_product_availability
+from config import settings
 
 
 # In-memory storage for checkout sessions (in production, use database)

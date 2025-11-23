@@ -30,6 +30,7 @@ The flow of a transaction in this demo is as follows:
 Before running this demo, ensure you have:
 
 * **Python 3.9+:** Python runtime environment
+* **uv:** Fast Python package installer (install from https://github.com/astral-sh/uv or run: `curl -LsSf https://astral.sh/uv/install.sh | sh`)
 * **Databricks Workspace:** Access to a workspace with compute enabled (optional for local development).
 * **LLM Endpoint:** Access to a foundational model (e.g., DBRX, Llama 3) via Databricks Model Serving (optional).
 * **Wallet/Payment Provider:** A configured wallet (e.g., Coinbase Developer Platform, Stripe Crypto) or mock environment for handling stablecoin flows.
@@ -43,12 +44,16 @@ Before running this demo, ensure you have:
 git clone <repository-url>
 cd agentic-commerce-protocol
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Install uv if not already installed
+# On macOS/Linux:
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# On Windows:
+# powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-# Install dependencies
-pip install -r requirements.txt
+# Create virtual environment and install dependencies
+uv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+uv pip install -r requirements.txt
 ```
 
 ### 2. Configure Environment
@@ -67,18 +72,21 @@ PAYMENT_PROVIDER=usdc
 SUPPORTED_PAYMENT_METHODS=["usdc"]
 
 # Stablecoin Configuration
-STABLECOIN_NETWORK=ethereum
+STABLECOIN_NETWORK=solana
 MOCK_PAYMENT_VERIFICATION=true  # Set to false for real blockchain verification
 ```
 
 ### 3. Run the API Server
 
 ```bash
-# Run with uvicorn
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+# Run with uvicorn (recommended)
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
-# Or run directly
-python main.py
+# Or use the shell script
+./run_server.sh
+
+# Or run directly (requires PYTHONPATH)
+PYTHONPATH=. python main.py
 ```
 
 The API will be available at `http://localhost:8000`

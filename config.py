@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     products_table: str = "products"
     
     # Stablecoin Configuration
-    stablecoin_network: str = "ethereum"  # or "polygon", "solana", etc.
+    stablecoin_network: str = "solana"  # or "ethereum", "polygon", etc.
     stablecoin_contract_address: Optional[str] = None  # USDC contract address
     mock_payment_verification: bool = True  # Set to False for real blockchain verification
     

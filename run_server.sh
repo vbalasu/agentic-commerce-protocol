@@ -8,5 +8,5 @@ echo ""
 echo "Press Ctrl+C to stop the server"
 echo ""
 
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
 

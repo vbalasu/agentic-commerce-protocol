@@ -4,8 +4,8 @@ Main FastAPI application for ACP Demo
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .api.checkout import router as checkout_router
-from .config import settings
+from api.checkout import router as checkout_router
+from config import settings
 
 app = FastAPI(
     title=settings.api_title,

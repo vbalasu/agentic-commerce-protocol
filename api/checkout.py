@@ -4,7 +4,7 @@ ACP Checkout API Endpoints
 from fastapi import APIRouter, HTTPException, Header, status
 from typing import Optional
 
-from ..models.checkout import (
+from models.checkout import (
     CheckoutSession,
     CheckoutSessionWithOrder,
     CheckoutSessionCreateRequest,
@@ -13,14 +13,14 @@ from ..models.checkout import (
     Error,
     ErrorType,
 )
-from ..services.checkout_service import (
+from services.checkout_service import (
     create_checkout_session,
     update_checkout_session,
     get_checkout_session,
     complete_checkout_session,
     cancel_checkout_session,
 )
-from ..config import settings
+from config import settings
 
 router = APIRouter(prefix="/checkout_sessions", tags=["CheckoutSessions"])
 
