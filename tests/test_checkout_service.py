@@ -2,14 +2,14 @@
 Tests for checkout service logic
 """
 import pytest
-from ..services.checkout_service import (
+from services.checkout_service import (
     create_checkout_session,
     update_checkout_session,
     get_checkout_session,
     complete_checkout_session,
     cancel_checkout_session,
 )
-from ..models.checkout import (
+from models.checkout import (
     CheckoutSessionCreateRequest,
     CheckoutSessionUpdateRequest,
     CheckoutSessionCompleteRequest,

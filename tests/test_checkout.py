@@ -3,8 +3,8 @@ Tests for checkout API endpoints
 """
 import pytest
 from fastapi.testclient import TestClient
-from ..main import app
-from ..examples.example_requests import (
+from main import app
+from examples.example_requests import (
     CREATE_MINIMAL,
     CREATE_WITH_ADDRESS,
     CREATE_WITH_BUYER,

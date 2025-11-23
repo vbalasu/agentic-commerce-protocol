@@ -185,15 +185,39 @@ Headers:
 Run the test suite:
 
 ```bash
+# Make sure dependencies are installed
+pip install -r requirements.txt
+
 # Run all tests
 pytest
 
-# Run with coverage
+# Or use Python module syntax
+python -m pytest
+
+# Run with verbose output
+pytest -v
+
+# Run with coverage report
 pytest --cov=. --cov-report=html
+# Coverage report will be generated in htmlcov/index.html
 
 # Run specific test file
 pytest tests/test_checkout.py
+pytest tests/test_checkout_service.py
+
+# Run specific test function
+pytest tests/test_checkout.py::test_create_checkout_session_minimal
+
+# Run tests matching a pattern
+pytest -k "test_create"
+
+# Run tests with more detailed output
+pytest -vv
 ```
+
+The test suite includes:
+- **API endpoint tests** (`tests/test_checkout.py`): Tests for all ACP checkout endpoints
+- **Service logic tests** (`tests/test_checkout_service.py`): Tests for business logic and service functions
 
 ## 📁 Project Structure
 
