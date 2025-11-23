@@ -11,7 +11,7 @@ The [Agentic Commerce Protocol](https://www.agenticcommerce.dev/) is an open sta
 This implementation extends the standard flow by utilizing **Stablecoins** for settlement, offering a fast, low-fee, and borderless payment method ideal for autonomous agents.
 
 ### Key Features
-* **ACP Compliant:** Implements the core ACP specification (`/manage_checkout`, etc.) for standardization.
+* **ACP Compliant:** Implements the core ACP specification (`/checkout_sessions`, etc.) for standardization.
 * **Databricks Backend:** Leverages Databricks Model Serving or Notebook jobs to host the agent logic and commerce endpoints.
 * **Stablecoin Native:** Completes purchases using crypto (USDC) rather than traditional credit card rails, demonstrating modern agent-to-business settlement.
 
@@ -29,23 +29,213 @@ The flow of a transaction in this demo is as follows:
 
 Before running this demo, ensure you have:
 
-* **Databricks Workspace:** Access to a workspace with compute enabled.
-* **LLM Endpoint:** Access to a foundational model (e.g., DBRX, Llama 3) via Databricks Model Serving.
+* **Python 3.9+:** Python runtime environment
+* **Databricks Workspace:** Access to a workspace with compute enabled (optional for local development).
+* **LLM Endpoint:** Access to a foundational model (e.g., DBRX, Llama 3) via Databricks Model Serving (optional).
 * **Wallet/Payment Provider:** A configured wallet (e.g., Coinbase Developer Platform, Stripe Crypto) or mock environment for handling stablecoin flows.
-* **ACP API Keys:** (If connecting to a live ACP merchant)
 
 ## ⚡ Quick Start
 
 ### 1. Setup Environment
-Cloning this repository into your Databricks workspace (if not already done).
 
-### 2. Configure Secrets
-Securely store your API keys and wallet private keys using Databricks Secrets.
 ```bash
-databricks secrets create-scope --scope acp_demo
-databricks secrets put --scope acp_demo --key wallet_private_key
+# Clone the repository
+git clone <repository-url>
+cd agentic-commerce-protocol
 
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-#### References
+# Install dependencies
+pip install -r requirements.txt
+```
 
-- https://www.agenticcommerce.dev/
+### 2. Configure Environment
+
+Create a `.env` file (optional, defaults are provided):
+
+```bash
+# API Configuration
+API_VERSION=2025-09-29
+
+# Currency
+DEFAULT_CURRENCY=USD
+
+# Payment Provider
+PAYMENT_PROVIDER=usdc
+SUPPORTED_PAYMENT_METHODS=["usdc"]
+
+# Stablecoin Configuration
+STABLECOIN_NETWORK=ethereum
+MOCK_PAYMENT_VERIFICATION=true  # Set to false for real blockchain verification
+```
+
+### 3. Run the API Server
+
+```bash
+# Run with uvicorn
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+# Or run directly
+python main.py
+```
+
+The API will be available at `http://localhost:8000`
+
+### 4. API Documentation
+
+Once the server is running, visit:
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+## 📚 API Endpoints
+
+### Create Checkout Session
+```bash
+POST /checkout_sessions
+Headers:
+  Authorization: Bearer <api_key>
+  API-Version: 2025-09-29
+  Content-Type: application/json
+
+Body:
+{
+  "items": [
+    {
+      "id": "item_001",
+      "quantity": 1
+    }
+  ],
+  "fulfillment_address": {
+    "name": "John Doe",
+    "line_one": "123 Main St",
+    "city": "San Francisco",
+    "state": "CA",
+    "country": "US",
+    "postal_code": "94102"
+  }
+}
+```
+
+### Update Checkout Session
+```bash
+POST /checkout_sessions/{checkout_session_id}
+Headers:
+  Authorization: Bearer <api_key>
+  API-Version: 2025-09-29
+
+Body:
+{
+  "fulfillment_option_id": "fulfillment_shipping_standard"
+}
+```
+
+### Get Checkout Session
+```bash
+GET /checkout_sessions/{checkout_session_id}
+Headers:
+  Authorization: Bearer <api_key>
+  API-Version: 2025-09-29
+```
+
+### Complete Checkout Session
+```bash
+POST /checkout_sessions/{checkout_session_id}/complete
+Headers:
+  Authorization: Bearer <api_key>
+  API-Version: 2025-09-29
+  Content-Type: application/json
+
+Body:
+{
+  "payment_data": {
+    "token": "0x1234567890abcdef...",  # Transaction hash
+    "provider": "usdc",
+    "billing_address": {
+      "name": "John Doe",
+      "line_one": "123 Main St",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "postal_code": "94102"
+    }
+  }
+}
+```
+
+### Cancel Checkout Session
+```bash
+POST /checkout_sessions/{checkout_session_id}/cancel
+Headers:
+  Authorization: Bearer <api_key>
+  API-Version: 2025-09-29
+```
+
+## 🧪 Testing
+
+Run the test suite:
+
+```bash
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=. --cov-report=html
+
+# Run specific test file
+pytest tests/test_checkout.py
+```
+
+## 📁 Project Structure
+
+```
+agentic-commerce-protocol/
+├── api/
+│   ├── __init__.py
+│   └── checkout.py          # API endpoints
+├── models/
+│   ├── __init__.py
+│   └── checkout.py          # Pydantic data models
+├── services/
+│   ├── __init__.py
+│   └── checkout_service.py  # Business logic
+├── data/
+│   ├── __init__.py
+│   └── products.py          # Product catalog
+├── examples/
+│   ├── __init__.py
+│   └── example_requests.py # Example API requests
+├── tests/
+│   ├── __init__.py
+│   ├── test_checkout.py     # API endpoint tests
+│   └── test_checkout_service.py  # Service logic tests
+├── config.py                # Configuration
+├── main.py                  # FastAPI application
+├── requirements.txt         # Python dependencies
+└── README.md
+```
+
+## 🔧 Configuration
+
+See `config.py` for all configuration options. Key settings:
+
+- `api_version`: ACP API version (default: "2025-09-29")
+- `default_currency`: Default currency (default: "USD")
+- `payment_provider`: Payment provider (default: "usdc")
+- `mock_payment_verification`: Use mock payment verification (default: True)
+
+## 🎯 Example Usage
+
+See `examples/example_requests.py` for complete example requests matching the ACP specification.
+
+## 📖 References
+
+- [Agentic Commerce Protocol](https://www.agenticcommerce.dev/)
+- [ACP Specification](https://github.com/agentic-commerce-protocol/agentic-commerce-protocol)
+- [OpenAI ACP Documentation](https://developers.openai.com/commerce/)
+- [Stripe Agentic Commerce Documentation](https://docs.stripe.com/agentic-commerce)
+
+## 📝 License
+
+This project is licensed under the Apache 2.0 License.

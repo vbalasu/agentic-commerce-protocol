@@ -5,6 +5,8 @@
 
 Implement the critical Agentic Commerce Protocol (ACP) features for a stablecoin-based e-commerce demo. The demo will run on Databricks and demonstrate autonomous AI agent transactions using USDC.
 
+The core UI will be implemented as a Databricks App. The app will display products from a product catalog, implemented as a Delta table in Unity Catalog.
+
 ## Key Features to Implement
 
 ### 1. Checkout Session Management (Core Flow)
@@ -85,7 +87,7 @@ Implement the critical Agentic Commerce Protocol (ACP) features for a stablecoin
 ## Technical Considerations
 
 - Use OpenAPI 3.1.0 spec as reference
-- Implement proper error handling (4XX, 5XX responses)
+- Implement proper error handling (4XX, 5XX responses), including x402 for payment required
 - Support required headers: Authorization, API-Version, Idempotency-Key
 - Return authoritative cart state on all operations
 - Handle status transitions: not_ready_for_payment → ready_for_payment → completed
@@ -104,6 +106,7 @@ Implement the critical Agentic Commerce Protocol (ACP) features for a stablecoin
 - Integration tests for API endpoints
 - Example requests matching ACP examples
 - Test stablecoin payment flow end-to-end
+- Use Phantom wallet for testing stablecoin transactions
 
 ### To-dos
 

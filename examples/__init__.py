@@ -1,0 +1,4 @@
+"""
+Example requests and responses
+"""
+
